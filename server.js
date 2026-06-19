@@ -201,12 +201,12 @@ app.post('/api/auth/login', async (req, res) => {
 
     // 获取用户菜单 - 优先直接分配，其次角色菜单
     const menusResult = await pool.query(
-      `SELECT DISTINCT mi.code, mi.title, mi.path, mi.icon
+      `SELECT mi.code, mi.title, mi.path, mi.icon
        FROM menu_items mi
-       LEFT JOIN user_menu_items umi ON umi.menu_item_id = mi.id AND umi.user_id = $1
-       LEFT JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
-       LEFT JOIN user_roles ur ON ur.role_id = rmi.role_id AND ur.user_id = $1
-       WHERE mi.is_active = true AND (umi.user_id IS NOT NULL OR ur.user_id IS NOT NULL)
+       WHERE mi.is_active = true AND (
+         EXISTS (SELECT 1 FROM user_menu_items umi WHERE umi.menu_item_id = mi.id AND umi.user_id = $1)
+         OR EXISTS (SELECT 1 FROM role_menu_items rmi JOIN user_roles ur ON ur.role_id = rmi.role_id WHERE rmi.menu_item_id = mi.id AND ur.user_id = $1)
+       )
        ORDER BY mi.sort_order`,
       [user.id]
     );
@@ -281,11 +281,11 @@ app.get('/api/auth/me', authenticate, loadUserContext, async (req, res) => {
 
     // 获取用户菜单 - 优先直接分配
     const menusResult = await pool.query(
-      `SELECT DISTINCT mi.code, mi.title, mi.path, mi.icon FROM menu_items mi
-       LEFT JOIN user_menu_items umi ON umi.menu_item_id = mi.id AND umi.user_id = $1
-       LEFT JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
-       LEFT JOIN user_roles ur ON ur.role_id = rmi.role_id AND ur.user_id = $1
-       WHERE mi.is_active = true AND (umi.user_id IS NOT NULL OR ur.user_id IS NOT NULL)
+      `SELECT mi.code, mi.title, mi.path, mi.icon FROM menu_items mi
+       WHERE mi.is_active = true AND (
+         EXISTS (SELECT 1 FROM user_menu_items umi WHERE umi.menu_item_id = mi.id AND umi.user_id = $1)
+         OR EXISTS (SELECT 1 FROM role_menu_items rmi JOIN user_roles ur ON ur.role_id = rmi.role_id WHERE rmi.menu_item_id = mi.id AND ur.user_id = $1)
+       )
        ORDER BY mi.sort_order`,
       [req.user.userId]
     );
