@@ -124,18 +124,28 @@ function requirePermission(...permCodes) {
 // 中间件：加载用户角色权限信息
 async function loadUserContext(req, res, next) {
   try {
-    const result = await pool.query(
-      `SELECT r.code as role_code, r.name as role_name, array_agg(p.code) as permissions
-       FROM user_roles ur
-       JOIN roles r ON r.id = ur.role_id
-       LEFT JOIN role_permissions rp ON rp.role_id = r.id
-       LEFT JOIN permissions p ON p.id = rp.permission_id
-       WHERE ur.user_id = $1
-       GROUP BY r.id, r.code, r.name`,
+    // 优先读取用户直接权限
+    const permResult = await pool.query(
+      `SELECT p.code FROM permissions p
+       JOIN user_permissions up ON up.permission_id = p.id
+       WHERE up.user_id = $1`,
       [req.user.userId]
     );
-    req.userRoles = result.rows;
-    req.userPermissions = [...new Set(result.rows.flatMap(r => r.permissions).filter(Boolean))];
+    let permissions = permResult.rows.map(r => r.code);
+
+    // 如果没有直接权限，读取角色权限作为基础
+    if (permissions.length === 0) {
+      const roleResult = await pool.query(
+        `SELECT DISTINCT p.code FROM permissions p
+         JOIN role_permissions rp ON rp.permission_id = p.id
+         JOIN user_roles ur ON ur.role_id = rp.role_id
+         WHERE ur.user_id = $1`,
+        [req.user.userId]
+      );
+      permissions = roleResult.rows.map(r => r.code);
+    }
+
+    req.userPermissions = permissions;
     next();
   } catch (err) {
     next(err);
@@ -189,16 +199,31 @@ app.post('/api/auth/login', async (req, res) => {
       { expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d' }
     );
 
-    // 获取用户菜单
+    // 获取用户菜单 - 优先直接分配，其次角色菜单
     const menusResult = await pool.query(
-      `SELECT mi.code, mi.title, mi.path, mi.icon
+      `SELECT DISTINCT mi.code, mi.title, mi.path, mi.icon
        FROM menu_items mi
-       JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
-       JOIN user_roles ur ON ur.role_id = rmi.role_id
-       WHERE ur.user_id = $1 AND mi.is_active = true
+       LEFT JOIN user_menu_items umi ON umi.menu_item_id = mi.id AND umi.user_id = $1
+       LEFT JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
+       LEFT JOIN user_roles ur ON ur.role_id = rmi.role_id AND ur.user_id = $1
+       WHERE mi.is_active = true AND (umi.user_id IS NOT NULL OR ur.user_id IS NOT NULL)
        ORDER BY mi.sort_order`,
       [user.id]
     );
+
+    // 如果没有直接分配菜单，用角色默认菜单
+    if (menusResult.rows.length === 0) {
+      const defaultMenus = await pool.query(
+        `SELECT mi.code, mi.title, mi.path, mi.icon
+         FROM menu_items mi
+         JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
+         JOIN user_roles ur ON ur.role_id = rmi.role_id
+         WHERE ur.user_id = $1 AND mi.is_active = true
+         ORDER BY mi.sort_order`,
+        [user.id]
+      );
+      menusResult.rows = defaultMenus.rows;
+    }
 
     res.json({
       token,
@@ -254,19 +279,27 @@ app.get('/api/auth/me', authenticate, loadUserContext, async (req, res) => {
     );
     if (result.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
 
+    // 获取用户菜单 - 优先直接分配
     const menusResult = await pool.query(
-      `SELECT mi.code, mi.title, mi.path, mi.icon
-       FROM menu_items mi
-       JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
-       JOIN user_roles ur ON ur.role_id = rmi.role_id
-       WHERE ur.user_id = $1 AND mi.is_active = true
+      `SELECT DISTINCT mi.code, mi.title, mi.path, mi.icon FROM menu_items mi
+       LEFT JOIN user_menu_items umi ON umi.menu_item_id = mi.id AND umi.user_id = $1
+       LEFT JOIN role_menu_items rmi ON rmi.menu_item_id = mi.id
+       LEFT JOIN user_roles ur ON ur.role_id = rmi.role_id AND ur.user_id = $1
+       WHERE mi.is_active = true AND (umi.user_id IS NOT NULL OR ur.user_id IS NOT NULL)
        ORDER BY mi.sort_order`,
+      [req.user.userId]
+    );
+
+    // 获取角色列表
+    const rolesResult = await pool.query(
+      `SELECT r.code, r.name FROM roles r
+       JOIN user_roles ur ON ur.role_id = r.id WHERE ur.user_id = $1`,
       [req.user.userId]
     );
 
     res.json({
       user: result.rows[0],
-      roles: req.userRoles.map(r => ({ code: r.role_code, name: r.role_name })),
+      roles: rolesResult.rows,
       permissions: req.userPermissions,
       menus: menusResult.rows,
     });
@@ -319,7 +352,38 @@ app.get('/api/users', authenticate, requirePermission('user:view'), async (req, 
       total: parseInt(countResult.rows[0].count),
       page: parseInt(page),
       pageSize: parseInt(pageSize),
-      data: usersResult.rows,
+      data: usersResult.rows.map(u => ({...u, permission_count: 0})),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: '服务器内部错误' });
+  }
+});
+
+// GET /api/users/:id - 单个用户详情（含权限和菜单）
+app.get('/api/users/:id', authenticate, requirePermission('user:view'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userResult = await pool.query(
+      `SELECT u.id, u.username, u.display_name, u.phone, u.email, u.status,
+              array_agg(DISTINCT r.code) as roles
+       FROM users u
+       LEFT JOIN user_roles ur ON ur.user_id = u.id
+       LEFT JOIN roles r ON r.id = ur.role_id
+       WHERE u.id = $1 AND u.deleted_at IS NULL
+       GROUP BY u.id`, [id]
+    );
+    if (userResult.rows.length === 0) return res.status(404).json({ error: '用户不存在' });
+
+    const [permResult, menuResult] = await Promise.all([
+      pool.query('SELECT p.code FROM permissions p JOIN user_permissions up ON up.permission_id = p.id WHERE up.user_id = $1', [id]),
+      pool.query('SELECT m.code FROM menu_items m JOIN user_menu_items um ON um.menu_item_id = m.id WHERE um.user_id = $1', [id]),
+    ]);
+
+    res.json({
+      ...userResult.rows[0],
+      permissions: permResult.rows.map(r => r.code),
+      menus: menuResult.rows.map(r => r.code),
     });
   } catch (err) {
     console.error(err);
@@ -331,7 +395,7 @@ app.get('/api/users', authenticate, requirePermission('user:view'), async (req, 
 app.post('/api/users', authenticate, requirePermission('user:create'), async (req, res) => {
   const client = await pool.connect();
   try {
-    const { username, password, displayName, phone, email, roleCodes } = req.body;
+    const { username, password, displayName, phone, email, roleCodes, permissionCodes, menuCodes } = req.body;
     if (!username || !password || !displayName) {
       return res.status(400).json({ error: '用户名、密码、姓名为必填' });
     }
@@ -361,9 +425,25 @@ app.post('/api/users', authenticate, requirePermission('user:create'), async (re
       );
     }
 
+    // 直接分配权限
+    if (permissionCodes && Array.isArray(permissionCodes)) {
+      const permResult = await client.query(`SELECT id, code FROM permissions WHERE code = ANY($1)`, [permissionCodes]);
+      for (const p of permResult.rows) {
+        await client.query('INSERT INTO user_permissions (user_id, permission_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [userId, p.id]);
+      }
+    }
+
+    // 直接分配菜单
+    if (menuCodes && Array.isArray(menuCodes)) {
+      const menuResult = await client.query(`SELECT id, code FROM menu_items WHERE code = ANY($1)`, [menuCodes]);
+      for (const m of menuResult.rows) {
+        await client.query('INSERT INTO user_menu_items (user_id, menu_item_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [userId, m.id]);
+      }
+    }
+
     await client.query('COMMIT');
 
-    await writeAuditLog(client, req.user.userId, 'user:create', 'user', userId, null, { username, displayName, roleCodes }, req);
+    await writeAuditLog(client, req.user.userId, 'user:create', 'user', userId, null, { username, displayName, roleCodes, permissionCodes, menuCodes }, req);
 
     res.status(201).json({ id: userId, username, displayName });
   } catch (err) {
@@ -407,6 +487,24 @@ app.patch('/api/users/:id', authenticate, requirePermission('user:update'), asyn
       const roleResult = await client.query('SELECT id, code FROM roles WHERE code = ANY($1)', [roleCodes]);
       for (const role of roleResult.rows) {
         await client.query('INSERT INTO user_roles (user_id, role_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [id, role.id]);
+      }
+    }
+
+    // 更新直接权限
+    if (req.body.permissionCodes !== undefined && Array.isArray(req.body.permissionCodes)) {
+      await client.query('DELETE FROM user_permissions WHERE user_id = $1', [id]);
+      const permResult = await client.query('SELECT id, code FROM permissions WHERE code = ANY($1)', [req.body.permissionCodes]);
+      for (const p of permResult.rows) {
+        await client.query('INSERT INTO user_permissions (user_id, permission_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [id, p.id]);
+      }
+    }
+
+    // 更新直接菜单
+    if (req.body.menuCodes !== undefined && Array.isArray(req.body.menuCodes)) {
+      await client.query('DELETE FROM user_menu_items WHERE user_id = $1', [id]);
+      const menuResult = await client.query('SELECT id, code FROM menu_items WHERE code = ANY($1)', [req.body.menuCodes]);
+      for (const m of menuResult.rows) {
+        await client.query('INSERT INTO user_menu_items (user_id, menu_item_id) VALUES ($1, $2) ON CONFLICT DO NOTHING', [id, m.id]);
       }
     }
 
@@ -853,7 +951,7 @@ app.post('/api/orders/:id/dispatch', authenticate, requirePermission('dispatch:a
     const deliveryResult = await client.query(
       `INSERT INTO delivery_tasks (delivery_no, order_id, dispatcher_id, courier_id, clerk_id, status, notes, assigned_at)
        VALUES ($1, $2, $3, $4, $5, 'assigned', $6, now()) RETURNING *`,
-      [deliveryNo, id, req.user.userId, courierId, order.created_by, notes || null]
+      [deliveryNo, id, req.user.userId, courierId, orderResult.rows[0].created_by, notes || null]
     );
 
     // 更新工单状态

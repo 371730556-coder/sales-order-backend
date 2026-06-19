@@ -95,6 +95,26 @@ CREATE TABLE role_menu_items (
 );
 
 -- ============================================================
+-- 7b. 用户-权限直接关联表（绕过角色）
+-- ============================================================
+CREATE TABLE user_permissions (
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    permission_id BIGINT NOT NULL REFERENCES permissions(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (user_id, permission_id)
+);
+
+-- ============================================================
+-- 7c. 用户-菜单直接关联表（绕过角色）
+-- ============================================================
+CREATE TABLE user_menu_items (
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    menu_item_id BIGINT NOT NULL REFERENCES menu_items(id) ON DELETE CASCADE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (user_id, menu_item_id)
+);
+
+-- ============================================================
 -- 8. 客户表
 -- ============================================================
 CREATE TABLE customers (
