@@ -4,101 +4,126 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>销售工单管理系统</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--primary:#4F46E5;--primary-hover:#4338CA;--sidebar-bg:#1E293B;--sidebar-hover:#334155;--bg:#F1F5F9;--card:#FFFFFF;--text:#1E293B;--text-secondary:#64748B;--border:#E2E8F0;--success:#10B981;--warning:#F59E0B;--danger:#EF4444;--info:#3B82F6;--radius:8px;--shadow:0 1px 3px rgba(0,0,0,0.08);--shadow-lg:0 10px 25px rgba(0,0,0,0.1)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+:root{--p:#2563EB;--ph:#1D4ED8;--p50:#EFF6FF;--sb:#0F172A;--sb-h:#1E293B;--bg:#F8FAFC;--s:#FFFFFF;--t:#1E293B;--ts:#64748B;--b:#E2E8F0;--ok:#059669;--warn:#D97706;--err:#DC2626;--info:#2563EB;--r:10px;--sh:0 1px 2px rgba(0,0,0,.05);--sh-lg:0 10px 40px rgba(0,0,0,.08)}
+*,::before,::after{box-sizing:border-box}
+body{margin:0;font-family:"Inter",-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--t);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+@media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 .hidden{display:none!important}
-#loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}
-.login-card{background:var(--card);border-radius:12px;padding:40px;width:420px;max-width:90vw;box-shadow:var(--shadow-lg)}
-.login-card h1{text-align:center;font-size:24px;margin-bottom:8px;color:var(--primary)}
-.login-card .subtitle{text-align:center;color:var(--text-secondary);margin-bottom:32px;font-size:14px}
-.form-group{margin-bottom:16px}
-.form-group label{display:block;margin-bottom:6px;font-weight:500;font-size:14px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;outline:none;font-family:inherit}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(79,70,229,0.1)}
-.form-group textarea{resize:vertical;min-height:60px}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.btn{padding:10px 20px;border:none;border-radius:var(--radius);font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;font-family:inherit}
-.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-hover)}
-.btn-success{background:var(--success);color:#fff}.btn-danger{background:var(--danger);color:#fff}.btn-warning{background:var(--warning);color:#fff}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}.btn-outline:hover{background:var(--bg)}
-.btn-sm{padding:6px 12px;font-size:13px}.btn-block{width:100%}.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-group{display:flex;gap:8px;flex-wrap:wrap}
+#loginPage{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1E3A5F 0%,#2563EB 50%,#7C3AED 100%);position:relative}
+#loginPage::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,255,255,.06) 0%,transparent 70%)}
+.login-card{background:var(--s);border-radius:16px;padding:44px 40px;width:420px;max-width:calc(100vw - 32px);box-shadow:0 20px 60px rgba(0,0,0,.15);position:relative;z-index:1}
+.login-card h1{text-align:center;font-size:22px;font-weight:700;margin-bottom:6px;color:var(--t);letter-spacing:-.01em}
+.login-card .subtitle{text-align:center;color:var(--ts);margin-bottom:32px;font-size:14px;line-height:1.5}
+.fg{margin-bottom:18px}
+.fg label{display:block;margin-bottom:6px;font-weight:500;font-size:13px;color:var(--t)}
+.fg input,.fg select,.fg textarea{width:100%;padding:10px 14px;border:1.5px solid var(--b);border-radius:8px;font-size:14px;font-family:inherit;color:var(--t);background:var(--s);transition:border-color .2s ease,box-shadow .2s ease;outline:none}
+.fg input:hover,.fg select:hover{border-color:#94A3B8}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--p);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.fg input::placeholder{color:#94A3B8}
+.fg textarea{resize:vertical;min-height:64px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 20px;border:none;border-radius:8px;font-size:14px;font-weight:500;font-family:inherit;cursor:pointer;transition:all .2s ease;outline:none;text-decoration:none;gap:6px;line-height:1.4}
+.btn:focus-visible{box-shadow:0 0 0 3px rgba(37,99,235,.3)}
+.btn:active{transform:scale(.98)}
+.btn-p{background:var(--p);color:#fff}.btn-p:hover{background:var(--ph);box-shadow:0 2px 8px rgba(37,99,235,.25)}.btn-p:active{background:#1E40AF}
+.btn-s{background:var(--ok);color:#fff}.btn-s:hover{background:#047857}
+.btn-w{background:var(--warn);color:#fff}.btn-w:hover{background:#B45309}
+.btn-d{background:var(--err);color:#fff}.btn-d:hover{background:#B91C1C}
+.btn-o{background:transparent;border:1.5px solid var(--b);color:var(--t)}.btn-o:hover{background:#F1F5F9;border-color:#94A3B8}
+.btn-sm{padding:6px 14px;font-size:13px;border-radius:6px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-group{display:flex;gap:10px;flex-wrap:wrap}
 #appPage{display:flex;min-height:100vh}
-.sidebar{width:240px;background:var(--sidebar-bg);color:#fff;display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.1)}
-.sidebar-header h2{font-size:16px;font-weight:600}
-.sidebar-header .role-badge{font-size:12px;color:#94A3B8;margin-top:4px}
-.sidebar-nav{flex:1;padding:12px 0}
-.sidebar-nav a{display:flex;align-items:center;padding:10px 20px;color:#94A3B8;text-decoration:none;font-size:14px;cursor:pointer;transition:all .15s;gap:10px}
-.sidebar-nav a:hover,.sidebar-nav a.active{background:var(--sidebar-hover);color:#fff}
-.sidebar-nav a .icon{width:20px;text-align:center;font-size:16px}
-.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.1)}
-.sidebar-footer .user-info{font-size:13px;color:#94A3B8;margin-bottom:8px}
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.topbar{background:var(--card);padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.topbar h3{font-size:18px;font-weight:600}
-.content{flex:1;padding:24px;overflow-y:auto}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
-.stat-card{background:var(--card);padding:20px;border-radius:var(--radius);box-shadow:var(--shadow)}
-.stat-card .label{font-size:13px;color:var(--text-secondary);margin-bottom:4px}
-.stat-card .value{font-size:28px;font-weight:700}
-.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:24px;margin-bottom:20px}
-.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:8px}
-.card-header h4{font-size:16px;font-weight:600}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:14px}
-table th{background:#F8FAFC;padding:12px 14px;text-align:left;font-weight:600;color:var(--text-secondary);border-bottom:2px solid var(--border);white-space:nowrap}
-table td{padding:12px 14px;border-bottom:1px solid var(--border)}
-table tr:hover td{background:#F8FAFC}
-table .actions{display:flex;gap:6px}
-.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:500}
-.badge-blue{background:#DBEAFE;color:#1E40AF}.badge-green{background:#D1FAE5;color:#065F46}.badge-orange{background:#FEF3C7;color:#92400E}.badge-red{background:#FEE2E2;color:#991B1B}.badge-gray{background:#F1F5F9;color:#475569}.badge-purple{background:#EDE9FE;color:#5B21B6}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:1000}
-.modal{background:var(--card);border-radius:12px;padding:28px;width:680px;max-width:95vw;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
-.modal h4{font-size:18px;margin-bottom:20px}
-.modal .form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
-.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 24px}
-.detail-item label{font-size:12px;color:var(--text-secondary);display:block;margin-bottom:2px}
-.detail-item span{font-size:14px;font-weight:500}
-.masked{color:var(--warning);font-style:italic}
-.toast{position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:var(--radius);color:#fff;font-size:14px;z-index:2000;animation:slideIn .3s ease;box-shadow:var(--shadow-lg)}
-.toast-success{background:var(--success)}.toast-error{background:var(--danger)}.toast-info{background:var(--info)}
-@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.search-bar input{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit}
-.search-bar select{padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius);font-size:14px;background:#fff}
-.timeline{position:relative;padding-left:24px;border-left:2px solid var(--border)}
-.timeline-item{position:relative;margin-bottom:16px;padding-left:12px}
-.timeline-item::before{content:'';position:absolute;left:-30px;top:4px;width:10px;height:10px;border-radius:50%;background:var(--primary)}
-.timeline-item .time{font-size:11px;color:var(--text-secondary)}
-.timeline-item .content{font-size:13px;padding:0}
-.phone-link{color:var(--info);text-decoration:none;font-weight:600}
-.copy-btn{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border:1px solid var(--border);border-radius:4px;font-size:11px;cursor:pointer;background:var(--bg);color:var(--text-secondary);transition:all .15s;white-space:nowrap;margin-left:4px}
-.copy-btn:hover{background:var(--primary);color:#fff}.copy-btn.copied{background:var(--success);color:#fff}
-.perm-section{margin-bottom:20px}
-.perm-section h5{font-size:14px;margin-bottom:10px;color:var(--primary)}
+.sidebar{width:248px;background:var(--sb);color:#E2E8F0;display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sidebar-header h2{font-size:15px;font-weight:600;color:#fff;letter-spacing:-.01em}
+.sidebar-header .role-badge{font-size:11px;color:#64748B;margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+.sidebar-nav{flex:1;padding:10px 0;overflow-y:auto}
+.sidebar-nav a{display:flex;align-items:center;padding:10px 20px;color:#94A3B8;text-decoration:none;font-size:13.5px;cursor:pointer;transition:all .15s ease;gap:10px;margin:0 8px;border-radius:8px;position:relative}
+.sidebar-nav a:hover{background:var(--sb-h);color:#E2E8F0}
+.sidebar-nav a.active{background:rgba(37,99,235,.2);color:#60A5FA;font-weight:500}
+.sidebar-nav a .icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.06)}
+.sidebar-footer .user-info{font-size:12.5px;color:#64748B;margin-bottom:8px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--s);padding:16px 28px;border-bottom:1px solid var(--b);display:flex;align-items:center;justify-content:space-between}
+.topbar h3{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.content{flex:1;padding:28px;overflow-y:auto}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px}
+.stat-card{background:var(--s);padding:22px 24px;border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--b);transition:box-shadow .2s ease}
+.stat-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.stat-card .label{font-size:12.5px;color:var(--ts);margin-bottom:6px;font-weight:500;letter-spacing:.01em}
+.stat-card .value{font-size:30px;font-weight:700;letter-spacing:-.02em}
+.card{background:var(--s);border-radius:var(--r);box-shadow:var(--sh);border:1px solid var(--b);padding:24px;margin-bottom:20px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.card-header h4{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.table-wrap{overflow-x:auto;border:1px solid var(--b);border-radius:var(--r)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+table th{background:#F8FAFC;padding:10px 14px;text-align:left;font-weight:600;color:var(--ts);border-bottom:2px solid var(--b);white-space:nowrap;font-size:12px;letter-spacing:.02em;text-transform:uppercase}
+table td{padding:12px 14px;border-bottom:1px solid var(--b);color:var(--t)}
+table tbody tr{transition:background .12s ease}
+table tbody tr:hover td{background:#F8FAFC}
+table .actions{display:flex;gap:6px;flex-wrap:nowrap}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:500;gap:4px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge-blue{background:#EFF6FF;color:#1D4ED8}.badge-blue::before{background:#3B82F6}
+.badge-green{background:#ECFDF5;color:#065F46}.badge-green::before{background:#10B981}
+.badge-orange{background:#FFFBEB;color:#92400E}.badge-orange::before{background:#F59E0B}
+.badge-red{background:#FEF2F2;color:#991B1B}.badge-red::before{background:#EF4444}
+.badge-gray{background:#F8FAFC;color:#475569}.badge-gray::before{background:#94A3B8}
+.badge-purple{background:#F5F3FF;color:#5B21B6}.badge-purple::before{background:#8B5CF6}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:center;justify-content:center;z-index:1000;animation:fadeIn .15s ease}
+.modal{background:var(--s);border-radius:14px;padding:28px;width:580px;max-width:calc(100vw - 32px);max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.12);animation:slideUp .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.modal h4{font-size:17px;font-weight:600;margin-bottom:22px;letter-spacing:-.01em}
+.modal .fa{display:flex;gap:10px;justify-content:flex-end;margin-top:24px}
+.dg{display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+.di label{font-size:11.5px;color:var(--ts);display:block;margin-bottom:3px;font-weight:500;letter-spacing:.02em;text-transform:uppercase}
+.di span{font-size:14px;font-weight:500}
+.masked{color:var(--warn)}
+.toast{position:fixed;top:24px;right:24px;padding:12px 20px;border-radius:8px;color:#fff;font-size:13.5px;z-index:2000;animation:toastIn .25s ease;box-shadow:0 8px 24px rgba(0,0,0,.12);font-weight:500}
+.toast-success{background:var(--ok)}.toast-error{background:var(--err)}.toast-info{background:var(--p)}
+@keyframes toastIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+.search-bar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+.search-bar input{flex:1;min-width:180px;padding:9px 14px;border:1.5px solid var(--b);border-radius:8px;font-size:14px;font-family:inherit;transition:border-color .2s}.search-bar input:focus{border-color:var(--p);outline:none;box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.search-bar select{padding:9px 14px;border:1.5px solid var(--b);border-radius:8px;font-size:14px;font-family:inherit;background:var(--s);cursor:pointer}
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--b)}
+.timeline-item{position:relative;margin-bottom:18px;padding-left:12px}
+.timeline-item::before{content:'';position:absolute;left:-22px;top:4px;width:8px;height:8px;border-radius:50%;background:var(--p);border:2px solid var(--s)}
+.timeline-item .time{font-size:11px;color:var(--ts);margin-bottom:2px}
+.timeline-item .content{font-size:13.5px;color:var(--t)}
+.phone-link{color:var(--p);text-decoration:none;font-weight:500}.phone-link:hover{text-decoration:underline;color:var(--ph)}
+.copy-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border:1.5px solid var(--b);border-radius:6px;font-size:11.5px;cursor:pointer;background:var(--s);color:var(--ts);transition:all .15s ease;white-space:nowrap;margin-left:6px;font-family:inherit}
+.copy-btn:hover{background:var(--p);color:#fff;border-color:var(--p)}.copy-btn.copied{background:var(--ok);color:#fff;border-color:var(--ok);pointer-events:none}
+.perm-section{margin-bottom:22px}.perm-section h5{font-size:14px;margin-bottom:10px;color:var(--p);font-weight:600}
 .perm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:6px}
-.perm-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#F8FAFC;border-radius:4px;cursor:pointer;font-size:13px}
-.perm-item:hover{background:#EEF2FF}
-.perm-item input{width:15px;height:15px;accent-color:var(--primary);cursor:pointer}
-.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);z-index:900;padding:4px 0;padding-bottom:max(4px,env(safe-area-inset-bottom))}
-.bottom-nav-inner{display:flex;justify-content:space-around;align-items:center;max-width:500px;margin:0 auto}
-.bottom-nav a{display:flex;flex-direction:column;align-items:center;padding:6px 8px;color:var(--text-secondary);text-decoration:none;font-size:10px;cursor:pointer;transition:color .15s;gap:2px;min-width:0;flex:1}
-.bottom-nav a .bn-icon{font-size:20px}.bottom-nav a.active{color:var(--primary);font-weight:600}
+.perm-item{display:flex;align-items:center;gap:8px;padding:7px 12px;background:#F8FAFC;border-radius:6px;cursor:pointer;font-size:13px;border:1.5px solid transparent;transition:all .12s ease}
+.perm-item:hover{background:var(--p50);border-color:rgba(37,99,235,.15)}
+.perm-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--p);cursor:pointer}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--s);border-top:1px solid var(--b);z-index:900;padding:4px 0 max(4px,env(safe-area-inset-bottom))}
+.bottom-nav-inner{display:flex;justify-content:space-around;max-width:500px;margin:0 auto}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;padding:6px 6px 4px;color:var(--ts);text-decoration:none;font-size:10px;cursor:pointer;transition:color .15s;gap:3px;flex:1}.bottom-nav a.active{color:var(--p);font-weight:600}
+.bottom-nav a .bn-icon{font-size:18px}
+
 @media(max-width:768px){
-#appPage{flex-direction:column}.sidebar{display:none!important}.main{width:100%;padding-bottom:70px}
-.topbar{padding:12px 16px}.topbar h3{font-size:16px}.content{padding:12px}
-.form-row{grid-template-columns:1fr}.detail-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr;gap:10px}
-.stat-card{padding:14px}.stat-card .value{font-size:22px}.card{padding:16px}.card-header h4{font-size:15px}
-.table-wrap{margin:0 -16px;padding:0 16px;overflow-x:auto}table{font-size:12px;min-width:600px}table th,table td{padding:8px 10px}
-.modal-overlay{align-items:flex-end}.modal{width:100%;max-width:100%;border-radius:16px 16px 0 0;padding:20px 16px;max-height:90vh}.modal h4{font-size:16px}
-.form-group input,.form-group select,.form-group textarea{font-size:16px;padding:12px}.btn{padding:12px 16px;font-size:15px}.btn-sm{padding:8px 14px;font-size:13px}
-.login-card{padding:28px 20px;width:100%;max-width:100%;border-radius:0}#loginPage{align-items:flex-start;padding-top:60px}
+#appPage{flex-direction:column}.sidebar{display:none!important}.main{width:100%;padding-bottom:72px}
+.topbar{padding:14px 18px}.topbar h3{font-size:16px}.topbar span{display:none}.content{padding:16px}
+.fr{grid-template-columns:1fr}.dg{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr;gap:10px}
+.stat-card{padding:16px 18px}.stat-card .value{font-size:24px}.card{padding:18px}.card-header h4{font-size:14.5px}
+.table-wrap{border-radius:0;border-left:none;border-right:none;margin:0 -16px}table{font-size:12.5px;min-width:600px}table th,table td{padding:9px 12px}
+.modal-overlay{align-items:flex-end}.modal{width:100%;max-width:100%;border-radius:18px 18px 0 0;padding:22px 18px;max-height:90vh}.modal h4{font-size:16px}
+.fg input,.fg select,.fg textarea{font-size:16px;padding:12px}.btn{padding:11px 18px;font-size:14.5px}.btn-sm{padding:7px 14px;font-size:13px}
+.login-card{padding:32px 22px;width:100%;max-width:100%;border-radius:0}#loginPage{align-items:flex-start;padding-top:80px}
 .search-bar{flex-direction:column}.search-bar input{width:100%}.perm-grid{grid-template-columns:1fr 1fr}
+.bottom-nav{display:block}
 }
-@media(max-width:768px){.bottom-nav{display:block}}
 </style>
 </head>
 <body>
@@ -106,35 +131,37 @@ table .actions{display:flex;gap:6px}
 <div class="login-card">
 <h1>销售工单管理系统</h1>
 <p class="subtitle">请登录您的账号</p>
-<div class="form-group"><label>用户名</label><input type="text" id="loginUsername" autocomplete="off"></div>
-<div class="form-group"><label>密码</label><input type="password" id="loginPassword"></div>
-<div id="loginError" style="color:var(--danger);font-size:13px;margin-bottom:12px;display:none"></div>
-<button class="btn btn-primary btn-block" onclick="handleLogin()">登 录</button>
+<div class="fg"><label>用户名</label><input type="text" id="loginUsername" autocomplete="off" placeholder="请输入用户名"></div>
+<div class="fg"><label>密码</label><input type="password" id="loginPassword" placeholder="请输入密码"></div>
+<div id="loginError" style="color:var(--err);font-size:13px;margin-bottom:14px;display:none"></div>
+<button class="btn btn-p btn-block" onclick="handleLogin()">登 录</button>
 </div></div>
 <div id="appPage" class="hidden">
 <aside class="sidebar">
 <div class="sidebar-header"><h2>工单管理系统</h2><div class="role-badge" id="sidebarRole"></div></div>
 <nav class="sidebar-nav" id="sidebarNav"></nav>
-<div class="sidebar-footer"><div class="user-info" id="sidebarUser"></div><button class="btn btn-outline btn-sm btn-block" style="color:#94A3B8;border-color:rgba(255,255,255,.2)" onclick="handleLogout()">退出登录</button></div>
+<div class="sidebar-footer"><div class="user-info" id="sidebarUser"></div><button class="btn btn-o btn-sm btn-block" style="color:#94A3B8;border-color:rgba(255,255,255,.1)" onclick="handleLogout()">退出登录</button></div>
 </aside>
 <main class="main">
-<div class="topbar"><h3 id="pageTitle">控制台</h3><span style="font-size:13px;color:var(--text-secondary)" id="currentTime"></span></div>
+<div class="topbar"><h3 id="pageTitle">控制台</h3><span style="font-size:13px;color:var(--ts)" id="currentTime"></span></div>
 <div class="content" id="mainContent"></div>
 </main>
 <nav class="bottom-nav" id="bottomNav"><div class="bottom-nav-inner" id="bottomNavInner"></div></nav>
 </div>
 <script>
-// ==================== CONFIG ====================
+const M={
+dashboard:'⌂',users:'☺','all-orders':'[=]','all-deliveries':'➤',
+'create-order':'+','my-orders':'☰','order-pool':'○','dispatch-mgmt':'⇄',
+'my-tasks':'✓',reports:'≡'
+};
 const API=window.location.origin+'/api';
-
-// ==================== HELPERS ====================
 function esc(s){if(s===null||s===undefined)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
 function $(id){return document.getElementById(id)}
-function toast(msg,type='info'){const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500)}
+function toast(msg,type='info'){const t=document.createElement('div');t.className='toast toast-'+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2800)}
 function maskPhone(p){if(!p||p.length<7)return esc(p);return esc(p.substring(0,3))+'****'+esc(p.substring(p.length-4))}
 function clickablePhone(p){if(!p||p.length<7)return esc(p);return'<a href="tel:'+esc(p)+'" class="phone-link">'+esc(p)+'</a>'}
-function copyableAddress(a){if(!a)return esc(a);return esc(a)+' <button class="copy-btn" onclick="copyAddr(this,\''+esc(a.replace(/'/g,"\\'"))+'\')">📋 复制</button>'}
-function copyAddr(btn,t){navigator.clipboard.writeText(t).then(()=>{btn.textContent='✅ 已复制';btn.classList.add('copied');setTimeout(()=>{btn.textContent='📋 复制';btn.classList.remove('copied')},1500)}).catch(()=>toast('复制失败','error'))}
+function copyableAddress(a){if(!a)return esc(a);return esc(a)+' <button class="copy-btn" onclick="copyAddr(this,\''+esc(a.replace(/'/g,"\\'"))+'\')">复制</button>'}
+function copyAddr(btn,t){navigator.clipboard.writeText(t).then(()=>{btn.textContent='已复制';btn.classList.add('copied');setTimeout(()=>{btn.textContent='复制';btn.classList.remove('copied')},1500)}).catch(()=>toast('复制失败','error'))}
 function statusBadge(s,tp='order'){
   const m={order:{draft:'草稿',pending:'待派单',dispatched:'已派单',delivering:'配送中',delivered:'已送达',completed:'已完成',cancelled:'已取消',exception:'异常'},delivery:{assigned:'已分配',accepted:'已接单',in_transit:'配送中',delivered:'已送达',signed:'已签收',failed:'配送失败',cancelled:'已取消',reassigned:'已改派'},user:{active:'在职',inactive:'离职',locked:'已锁定'}};
   const c={order:{draft:'gray',pending:'orange',dispatched:'blue',delivering:'purple',delivered:'green',completed:'green',cancelled:'red',exception:'red'},delivery:{assigned:'blue',accepted:'blue',in_transit:'purple',delivered:'green',signed:'green',failed:'red',cancelled:'gray',reassigned:'orange'},user:{active:'green',inactive:'gray',locked:'red'}};
@@ -142,9 +169,8 @@ function statusBadge(s,tp='order'){
 }
 function paymentLabel(pm){const m={cash:'现金',wechat:'微信',alipay:'支付宝',card:'银行卡',transfer:'转账',cod:'货到付款'};return m[pm]||pm||'现金'}
 function fmtDate(ts){return ts||'-'}
-function renderTimeline(logs){if(!logs||!logs.length)return'<p style="color:var(--text-secondary);font-size:13px;">暂无记录</p>';return'<div class="timeline">'+logs.map(l=>'<div class="timeline-item"><div class="time">'+esc(l.created_at||l.time)+'</div><div class="content">'+esc(l.to_status||l.action)+' — '+esc(l.operator_name||l.operator||'')+'</div></div>').join('')+'</div>'}
+function renderTimeline(logs){if(!logs||!logs.length)return'<p style="color:var(--ts);font-size:13px;padding:8px 0">暂无记录</p>';return'<div class="timeline">'+logs.map(l=>'<div class="timeline-item"><div class="time">'+esc(l.created_at||l.time)+'</div><div class="content">'+esc(l.to_status||l.action)+' — '+esc(l.operator_name||l.operator||'')+'</div></div>').join('')+'</div>'}
 
-// ==================== API ====================
 let token=null,currentUser=null,currentPage='dashboard',clockInterval=null,userRoles=[],userPermissions=[],userMenus=[];
 async function api(path,options={}){const h=options.headers||{};if(token)h['Authorization']='Bearer '+token;h['Content-Type']=h['Content-Type']||'application/json';const r=await fetch(API+path,{...options,headers:h});if(r.status===401){handleLogout();throw new Error('登录已过期')}if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error||'请求失败')}return r.json()}
 
@@ -174,43 +200,41 @@ function initApp(){
   $('currentTime').textContent=new Date().toLocaleString('zh-CN')
 }
 function buildSidebar(){
-  const items=userMenus.map(m=>({page:m.code,label:m.title,icon:m.icon}));
+  const items=userMenus.map(m=>({page:m.code,label:m.title,icon:M[m.code]||'·'}));
   $('sidebarNav').innerHTML=items.map(i=>'<a class="'+(currentPage===i.page?'active':'')+'" onclick="navigate(\''+i.page+'\')"><span class="icon">'+i.icon+'</span><span>'+esc(i.label)+'</span></a>').join('');
   const bi=$('bottomNavInner');if(bi)bi.innerHTML=items.map(i=>'<a class="'+(currentPage===i.page?'active':'')+'" onclick="navigate(\''+i.page+'\')"><span class="bn-icon">'+i.icon+'</span>'+esc(i.label)+'</a>').join('')
 }
-function navigate(p){currentPage=p;buildSidebar();const t={dashboard:'控制台',users:'用户管理','all-orders':'全部工单','all-deliveries':'配送记录','create-order':'创建工单','my-orders':'我的工单','order-pool':'工单池','dispatch-mgmt':'派单管理','my-tasks':'我的任务',reports:'数据报表'};$('pageTitle').textContent=t[p]||p;const r={dashboard:renderDashboard,users:renderUsers,'all-orders':renderAllOrders,'all-deliveries':renderAllDeliveries,'create-order':renderCreateOrder,'my-orders':renderMyOrders,'order-pool':renderOrderPool,'dispatch-mgmt':renderDispatchMgmt,'my-tasks':renderMyTasks};if(r[p])r[p]()}
+function navigate(p){currentPage=p;buildSidebar();const t={dashboard:'控制台',users:'用户管理','all-orders':'全部工单','all-deliveries':'配送记录','create-order':'创建工单','my-orders':'我的工单','order-pool':'工单池','dispatch-mgmt':'派单管理','my-tasks':'我的任务'};$('pageTitle').textContent=t[p]||p;const r={dashboard:renderDashboard,users:renderUsers,'all-orders':renderAllOrders,'all-deliveries':renderAllDeliveries,'create-order':renderCreateOrder,'my-orders':renderMyOrders,'order-pool':renderOrderPool,'dispatch-mgmt':renderDispatchMgmt,'my-tasks':renderMyTasks};if(r[p])r[p]()}
 
 // ==================== DASHBOARD ====================
 async function renderDashboard(){
   try{const d=await api('/dashboard/summary'),o=d.orders||{};
-    $('mainContent').innerHTML='<div class="stats-grid"><div class="stat-card"><div class="label">待派单</div><div class="value orange">'+(o.pending||0)+'</div></div><div class="stat-card"><div class="label">配送中</div><div class="value blue">'+(o.delivering||0)+'</div></div><div class="stat-card"><div class="label">已完成</div><div class="value green">'+(o.completed||0)+'</div></div><div class="stat-card"><div class="label">总工单</div><div class="value">'+(o.total||0)+'</div></div></div><div class="card"><div class="card-header"><h4>欢迎使用</h4></div><p style="color:var(--text-secondary);line-height:1.8">当前登录：<strong>'+esc(currentUser.displayName)+'</strong><br>系统根据您的权限控制功能可见性。</p></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="stats-grid"><div class="stat-card"><div class="label">待派单</div><div class="value" style="color:var(--warn)">'+(o.pending||0)+'</div></div><div class="stat-card"><div class="label">配送中</div><div class="value" style="color:var(--info)">'+(o.delivering||0)+'</div></div><div class="stat-card"><div class="label">已完成</div><div class="value" style="color:var(--ok)">'+(o.completed||0)+'</div></div><div class="stat-card"><div class="label">总工单</div><div class="value" style="color:var(--t)">'+(o.total||0)+'</div></div></div><div class="card"><div class="card-header"><h4>欢迎使用</h4></div><p style="color:var(--ts);line-height:1.8">当前登录：<strong>'+esc(currentUser.displayName)+'</strong><br>系统根据您的权限控制功能可见性。</p></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
-// ==================== USERS (ADMIN) ====================
+// ==================== USERS ====================
 const KNOWN_PERMS={order:['order:create','order:view_own','order:view_all','order:update_draft','order:submit','order:cancel','order:export'],dispatch:['dispatch:view_pool','dispatch:assign','dispatch:reassign'],delivery:['delivery:view_own','delivery:update_status','delivery:sign','delivery:report_failure'],user:['user:view','user:create','user:update','user:delete','user:manage_role'],report:['report:view','report:export']};
-const PERM_LABELS={user:['用户管理','user'],order:['工单操作','order'],dispatch:['派单操作','dispatch'],delivery:['配送操作','delivery'],report:['报表','report']};
-function permLabel(code){const parts=code.split(':');const labels={create:'创建',view_own:'查看自己',view_all:'查看全部',update_draft:'编辑草稿',submit:'提交',cancel:'取消',export:'导出',view_pool:'查看工单池',assign:'分派',reassign:'改派',update_status:'更新状态',sign:'签收',report_failure:'上报失败',view:'查看',update:'编辑',delete:'删除',manage_role:'管理权限'};return (labels[parts[1]]||parts[1])+(parts[2]?':'+parts[2]:'')}
+function permLabel(code){const p=code.split(':');const l={create:'创建',view_own:'查看自己',view_all:'查看全部',update_draft:'编辑草稿',submit:'提交',cancel:'取消',export:'导出',view_pool:'查看工单池',assign:'分派',reassign:'改派',update_status:'更新状态',sign:'签收',report_failure:'上报失败',view:'查看',update:'编辑',delete:'删除',manage_role:'管理权限'};return(l[p[1]]||p[1])+(p[2]?':'+p[2]:'')}
 
 async function renderUsers(){
   try{const d=await api('/users');
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>用户管理</h4><button class="btn btn-primary btn-sm" onclick="showUserModal()">+ 添加用户</button></div><div class="table-wrap"><table><thead><tr><th>用户名</th><th>姓名</th><th>角色</th><th>手机号</th><th>状态</th><th>权限数</th><th>操作</th></tr></thead><tbody>'+d.data.map(u=>'<tr><td>'+esc(u.username)+'</td><td>'+esc(u.display_name)+'</td><td>'+esc((u.roles||[]).join(', '))+'</td><td>'+esc(u.phone||'')+'</td><td>'+statusBadge(u.status,'user')+'</td><td>'+(u.permission_count||0)+'</td><td class="actions"><button class="btn btn-outline btn-sm" onclick="showUserModal(\''+u.id+'\')">编辑权限</button><button class="btn btn-sm '+(u.status==='active'?'btn-warning':'btn-success')+'" onclick="toggleUserStatus(\''+u.id+'\',\''+u.status+'\')">'+(u.status==='active'?'禁用':'启用')+'</button><button class="btn btn-danger btn-sm" onclick="deleteUser(\''+u.id+'\')">删除</button></td></tr>').join('')+'</tbody></table></div></div><div id="userModal"></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>用户管理</h4><button class="btn btn-p btn-sm" onclick="showUserModal()">+ 添加用户</button></div><div class="table-wrap"><table><thead><tr><th>用户名</th><th>姓名</th><th>角色</th><th>手机号</th><th>状态</th><th>权限数</th><th>操作</th></tr></thead><tbody>'+d.data.map(u=>'<tr><td>'+esc(u.username)+'</td><td>'+esc(u.display_name)+'</td><td>'+esc((u.roles||[]).join(', '))+'</td><td>'+esc(u.phone||'')+'</td><td>'+statusBadge(u.status,'user')+'</td><td>'+(u.permission_count||0)+'</td><td class="actions"><button class="btn btn-o btn-sm" onclick="showUserModal(\''+u.id+'\')">编辑权限</button><button class="btn btn-sm '+(u.status==='active'?'btn-w':'btn-s')+'" onclick="toggleUserStatus(\''+u.id+'\',\''+u.status+'\')">'+(u.status==='active'?'禁用':'启用')+'</button><button class="btn btn-d btn-sm" onclick="deleteUser(\''+u.id+'\')">删除</button></td></tr>').join('')+'</tbody></table></div></div><div id="userModal"></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
 async function showUserModal(uid){
-  let udata=null,uperms=[],umenus=[];
-  if(uid){try{const du=await api('/users/'+uid);udata=du;uperms=du.permissions||[];umenus=du.menus||[]}catch(e){toast(e.message,'error');return}}
+  let udata=null,uperms=[];
+  if(uid){try{const du=await api('/users/'+uid);udata=du;uperms=du.permissions||[]}catch(e){toast(e.message,'error');return}}
   const roles=['admin','manager','store_clerk','dispatcher','courier'];
   const roleNames={admin:'管理员',manager:'业务主管',store_clerk:'门店店员',dispatcher:'派单人员',courier:'送货人员'};
   const roleChecks=roles.map(r=>'<label class="perm-item"><input type="checkbox" value="'+r+'" '+(udata&&(udata.roles||[]).includes(r)?'checked':'')+' class="role-cb">'+roleNames[r]+'</label>').join('');
-
   $('userModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'userModal\')"><div class="modal"><h4>'+(uid?'编辑用户权限':'添加用户')+'</h4>'+
-    '<div class="form-row"><div class="form-group"><label>用户名</label><input type="text" id="ufUsername" value="'+esc(udata?.username||'')+'" '+(uid?'readonly':'')+'></div><div class="form-group"><label>密码'+(uid?' (留空不修改)':'')+'</label><input type="password" id="ufPassword"></div></div>'+
-    '<div class="form-row"><div class="form-group"><label>姓名</label><input type="text" id="ufName" value="'+esc(udata?.display_name||'')+'"></div><div class="form-group"><label>手机号</label><input type="text" id="ufPhone" value="'+esc(udata?.phone||'')+'"></div></div>'+
-    '<div class="form-group"><label>角色（可选基础角色）</label><div class="perm-grid">'+roleChecks+'</div></div>'+
+    '<div class="fr"><div class="fg"><label>用户名</label><input type="text" id="ufUsername" value="'+esc(udata?.username||'')+'" '+(uid?'readonly':'')+'></div><div class="fg"><label>密码'+(uid?' (留空不修改)':'')+'</label><input type="password" id="ufPassword"></div></div>'+
+    '<div class="fr"><div class="fg"><label>姓名</label><input type="text" id="ufName" value="'+esc(udata?.display_name||'')+'"></div><div class="fg"><label>手机号</label><input type="text" id="ufPhone" value="'+esc(udata?.phone||'')+'"></div></div>'+
+    '<div class="fg"><label>角色（可选基础角色）</label><div class="perm-grid">'+roleChecks+'</div></div>'+
     '<div class="perm-section"><h5>按模块配置具体权限</h5>'+Object.entries(KNOWN_PERMS).map(([mod,perms])=>
-      '<div class="form-group"><label style="font-weight:600;color:var(--primary)">'+PERM_LABELS[mod][0]+'</label><div class="perm-grid">'+perms.map(p=>'<label class="perm-item"><input type="checkbox" value="'+p+'" '+(uperms.includes(p)?'checked':'')+' class="perm-cb">'+permLabel(p)+'</label>').join('')+'</div></div>'
+      '<div class="fg"><label style="font-weight:600;color:var(--p)">'+{order:'工单操作',dispatch:'派单操作',delivery:'配送操作',user:'用户管理',report:'报表'}[mod]+'</label><div class="perm-grid">'+perms.map(p=>'<label class="perm-item"><input type="checkbox" value="'+p+'" '+(uperms.includes(p)?'checked':'')+' class="perm-cb">'+permLabel(p)+'</label>').join('')+'</div></div>'
     ).join('')+'</div>'+
-    '<div class="form-actions"><button class="btn btn-outline" onclick="closeModal(\'userModal\')">取消</button><button class="btn btn-primary" onclick="saveUser(\''+(uid||'')+'\')">保存</button></div></div></div>'
+    '<div class="fa"><button class="btn btn-o" onclick="closeModal(\'userModal\')">取消</button><button class="btn btn-p" onclick="saveUser(\''+(uid||'')+'\')">保存</button></div></div></div>'
 }
 
 async function saveUser(uid){
@@ -222,17 +246,11 @@ async function saveUser(uid){
   if(!uid&&!pw){toast('请输入密码','error');return}
   if(!uid){body.username=un;body.password=pw}
   if(pw&&uid)body.password=pw;
-
-  // Auto-assign menus based on permissions
   const menuMap={user:['users'],'order:create':['create-order'],'order:view_own':['my-orders'],'order:view_all':['all-orders'],'dispatch:view_pool':['order-pool'],'dispatch:assign':['order-pool','dispatch-mgmt'],'dispatch:reassign':['dispatch-mgmt'],'delivery:view_own':['my-tasks'],'delivery:update_status':['my-tasks'],'delivery:sign':['my-tasks'],'delivery:report_failure':['my-tasks'],'report:view':['reports'],'report:export':['reports']};
   const menus=new Set(['dashboard']);
   perms.forEach(p=>{(menuMap[p]||[]).forEach(m=>menus.add(m))});
   body.menuCodes=[...menus];
-
-  try{
-    await api(uid?'/users/'+uid:'/users',{method:uid?'PATCH':'POST',body:JSON.stringify(body)});
-    closeModal('userModal');toast(uid?'已更新':'已创建','success');renderUsers()
-  }catch(e){toast(e.message,'error')}
+  try{await api(uid?'/users/'+uid:'/users',{method:uid?'PATCH':'POST',body:JSON.stringify(body)});closeModal('userModal');toast(uid?'已更新':'已创建','success');renderUsers()}catch(e){toast(e.message,'error')}
 }
 async function toggleUserStatus(uid,cur){try{await api('/users/'+uid+'/status',{method:'PATCH',body:JSON.stringify({status:cur==='active'?'inactive':'active'})});toast('已更新','success');renderUsers()}catch(e){toast(e.message,'error')}}
 async function deleteUser(uid){if(!confirm('确定删除？'))return;try{await api('/users/'+uid,{method:'DELETE'});toast('已删除','success');renderUsers()}catch(e){toast(e.message,'error')}}
@@ -240,28 +258,27 @@ function closeModal(id){$(id).innerHTML=''}
 
 // ==================== ORDERS ====================
 async function renderCreateOrder(){
-  $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>创建销售工单</h4></div><div class="form-group"><label>顾客姓名 *</label><input type="text" id="ocName"></div><div class="form-row"><div class="form-group"><label>顾客电话 *</label><input type="text" id="ocPhone"></div><div class="form-group"><label>配送地址 *</label><input type="text" id="ocAddress"></div></div><div class="form-group"><label>配送要求</label><input type="text" id="ocReq" placeholder="如：易碎品、冷链配送、需上门安装"></div><div class="form-row"><div class="form-group"><label>付款方式</label><select id="ocPayment"><option value="cash">现金</option><option value="wechat">微信</option><option value="alipay">支付宝</option><option value="card">银行卡</option><option value="transfer">转账</option><option value="cod">货到付款</option></select></div><div class="form-group"><label>期望配送时间</label><input type="text" id="ocTime" placeholder="如：2026-06-20 上午"></div></div><div class="card-header"><h4>商品明细</h4><button class="btn btn-outline btn-sm" onclick="addOI()">+ 添加商品</button></div><div id="orderItems"></div><div style="text-align:right;margin:12px 0;font-size:16px">合计：<strong style="color:var(--danger)">¥<span id="ot">0.00</span></strong></div><div class="btn-group"><button class="btn btn-outline" onclick="submitOrder(\'draft\')">保存草稿</button><button class="btn btn-primary" onclick="submitOrder(\'pending\')">提交工单</button></div><div id="orderMsg" style="margin-top:10px;font-size:13px"></div></div>';addOI()}
-function addOI(){const d=document.createElement('div');d.className='form-row';d.style.cssText='margin-bottom:8px;align-items:end';d.innerHTML='<div class="form-group" style="margin-bottom:0"><label>商品</label><input type="text" class="item-name"></div><div class="form-group" style="margin-bottom:0"><label>数量</label><input type="number" class="item-qty" value="1" min="1" onchange="calcT()" style="width:80px"></div><div class="form-group" style="margin-bottom:0"><label>单价</label><input type="number" class="item-price" value="0" min="0" step="0.01" onchange="calcT()" style="width:120px"></div><button class="btn btn-danger btn-sm" onclick="this.parentElement.remove();calcT()">删除</button>';$('orderItems').appendChild(d)}
-function calcT(){let t=0;document.querySelectorAll('#orderItems .form-row').forEach(r=>{const q=parseFloat(r.querySelector('.item-qty')?.value)||0,p=parseFloat(r.querySelector('.item-price')?.value)||0;t+=q*p});$('ot').textContent=t.toFixed(2)}
+  $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>创建销售工单</h4></div><div class="fg"><label>顾客姓名 *</label><input type="text" id="ocName" placeholder="请输入顾客姓名"></div><div class="fr"><div class="fg"><label>顾客电话 *</label><input type="text" id="ocPhone" placeholder="请输入电话"></div><div class="fg"><label>配送地址 *</label><input type="text" id="ocAddress" placeholder="请输入配送地址"></div></div><div class="fg"><label>配送要求</label><input type="text" id="ocReq" placeholder="如：易碎品、冷链配送、需上门安装"></div><div class="fr"><div class="fg"><label>付款方式</label><select id="ocPayment"><option value="cash">现金</option><option value="wechat">微信</option><option value="alipay">支付宝</option><option value="card">银行卡</option><option value="transfer">转账</option><option value="cod">货到付款</option></select></div><div class="fg"><label>期望配送时间</label><input type="text" id="ocTime" placeholder="如：2026-06-20 上午"></div></div><div class="card-header"><h4>商品明细</h4><button class="btn btn-o btn-sm" onclick="addOI()">+ 添加商品</button></div><div id="orderItems"></div><div style="text-align:right;margin:12px 0;font-size:16px;font-weight:600">合计：<span style="color:var(--err)">¥<span id="ot">0.00</span></span></div><div class="btn-group"><button class="btn btn-o" onclick="submitOrder(\'draft\')">保存草稿</button><button class="btn btn-p" onclick="submitOrder(\'pending\')">提交工单</button></div><div id="orderMsg" style="margin-top:10px;font-size:13px"></div></div>';addOI()}
+function addOI(){const d=document.createElement('div');d.className='fr';d.style.cssText='margin-bottom:8px;align-items:end';d.innerHTML='<div class="fg" style="margin-bottom:0"><label>商品</label><input type="text" class="item-name" placeholder="商品名称"></div><div class="fg" style="margin-bottom:0"><label>数量</label><input type="number" class="item-qty" value="1" min="1" onchange="calcT()" style="width:80px"></div><div class="fg" style="margin-bottom:0"><label>单价</label><input type="number" class="item-price" value="0" min="0" step="0.01" onchange="calcT()" style="width:120px"></div><button class="btn btn-d btn-sm" onclick="this.parentElement.remove();calcT()" style="margin-bottom:0">删除</button>';$('orderItems').appendChild(d)}
+function calcT(){let t=0;document.querySelectorAll('#orderItems .fr').forEach(r=>{const q=parseFloat(r.querySelector('.item-qty')?.value)||0,p=parseFloat(r.querySelector('.item-price')?.value)||0;t+=q*p});$('ot').textContent=t.toFixed(2)}
 async function submitOrder(targetStatus){
   const nm=$('ocName').value.trim(),ph=$('ocPhone').value.trim(),ad=$('ocAddress').value.trim(),dr=$('ocReq').value.trim(),pm=$('ocPayment').value,dt=$('ocTime').value.trim(),msg=$('orderMsg');
-  if(targetStatus==='pending'&&(!nm||!ph||!ad)){msg.style.color='var(--danger)';msg.textContent='请填写姓名、电话和地址';return}
-  const items=[];document.querySelectorAll('#orderItems .form-row').forEach(r=>{const n=r.querySelector('.item-name')?.value.trim(),q=parseInt(r.querySelector('.item-qty')?.value)||0,p=parseFloat(r.querySelector('.item-price')?.value)||0;if(n&&q>0)items.push({name:n,quantity:q,unitPrice:p})});
-  if(!items.length){msg.style.color='var(--danger)';msg.textContent='请添加商品';return}
+  if(targetStatus==='pending'&&(!nm||!ph||!ad)){msg.style.color='var(--err)';msg.textContent='请填写姓名、电话和地址';return}
+  const items=[];document.querySelectorAll('#orderItems .fr').forEach(r=>{const n=r.querySelector('.item-name')?.value.trim(),q=parseInt(r.querySelector('.item-qty')?.value)||0,p=parseFloat(r.querySelector('.item-price')?.value)||0;if(n&&q>0)items.push({name:n,quantity:q,unitPrice:p})});
+  if(!items.length){msg.style.color='var(--err)';msg.textContent='请添加商品';return}
   try{await api('/orders',{method:'POST',body:JSON.stringify({customerName:nm,customerPhone:ph,customerAddress:ad,deliveryRequirement:dr,paymentMethod:pm,deliveryTime:dt,items,status:targetStatus})});
-    msg.style.color='var(--success)';msg.textContent=targetStatus==='draft'?'草稿已保存！':'工单已提交！';$('ocName').value='';$('ocPhone').value='';$('ocAddress').value='';$('ocReq').value='';$('ocPayment').value='cash';$('ocTime').value='';$('orderItems').innerHTML='';addOI();calcT()
-  }catch(e){msg.style.color='var(--danger)';msg.textContent=e.message}}
+    msg.style.color='var(--ok)';msg.textContent=targetStatus==='draft'?'草稿已保存！':'工单已提交！';$('ocName').value='';$('ocPhone').value='';$('ocAddress').value='';$('ocReq').value='';$('ocPayment').value='cash';$('ocTime').value='';$('orderItems').innerHTML='';addOI();calcT()}catch(e){msg.style.color='var(--err)';msg.textContent=e.message}}
 
 let myOF='',myOS='';
 async function renderMyOrders(){
   let qs='';if(myOF)qs+='&keyword='+encodeURIComponent(myOF);if(myOS)qs+='&status='+myOS;
   try{const d=await api('/orders?'+qs);
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>我的工单</h4></div><div class="search-bar"><input type="text" placeholder="搜索..." value="'+esc(myOF)+'" oninput="myOF=this.value;renderMyOrders()"><select onchange="myOS=this.value;renderMyOrders()"><option value="">全部</option><option value="draft">草稿</option><option value="pending">待派单</option><option value="dispatched">已派单</option><option value="delivering">配送中</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>顾客</th><th>电话</th><th>地址</th><th>金额</th><th>状态</th><th>操作</th></tr></thead><tbody>'+d.data.map(o=>'<tr><td><strong>'+esc(o.order_no)+'</strong></td><td>'+esc(o.customer_name)+'</td><td>'+clickablePhone(o.customer_phone)+'</td><td>'+copyableAddress(o.customer_address)+'</td><td>¥'+parseFloat(o.total_amount).toFixed(2)+'</td><td>'+statusBadge(o.status)+'</td><td class="actions"><button class="btn btn-outline btn-sm" onclick="showOD('+o.id+')">详情</button>'+(o.status==='draft'||o.status==='pending'?'<button class="btn btn-warning btn-sm" onclick="cancelOrder('+o.id+')">取消</button>':'')+'</td></tr>').join('')+'</tbody></table>'+(d.data.length===0?'<p style="text-align:center;color:var(--text-secondary);padding:20px">暂无工单</p>':'')+'</div></div><div id="detailModal"></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>我的工单</h4></div><div class="search-bar"><input type="text" placeholder="搜索工单号/顾客/电话..." value="'+esc(myOF)+'" oninput="myOF=this.value;renderMyOrders()"><select onchange="myOS=this.value;renderMyOrders()"><option value="">全部状态</option><option value="draft">草稿</option><option value="pending">待派单</option><option value="dispatched">已派单</option><option value="delivering">配送中</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>顾客</th><th>电话</th><th>地址</th><th>金额</th><th>状态</th><th>操作</th></tr></thead><tbody>'+d.data.map(o=>'<tr><td><strong>'+esc(o.order_no)+'</strong></td><td>'+esc(o.customer_name)+'</td><td>'+clickablePhone(o.customer_phone)+'</td><td>'+copyableAddress(o.customer_address)+'</td><td>¥'+parseFloat(o.total_amount).toFixed(2)+'</td><td>'+statusBadge(o.status)+'</td><td class="actions"><button class="btn btn-o btn-sm" onclick="showOD('+o.id+')">详情</button>'+(o.status==='draft'||o.status==='pending'?'<button class="btn btn-w btn-sm" onclick="cancelOrder('+o.id+')">取消</button>':'')+'</td></tr>').join('')+'</tbody></table>'+(d.data.length===0?'<p style="text-align:center;color:var(--ts);padding:32px">暂无工单</p>':'')+'</div></div><div id="detailModal"></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
 async function showOD(oid){
   try{const o=await api('/orders/'+oid);
-    $('detailModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'detailModal\')"><div class="modal"><h4>工单详情 - '+esc(o.order_no)+'</h4><div class="detail-grid"><div class="detail-item"><label>顾客</label><span>'+esc(o.customer_name)+'</span></div><div class="detail-item"><label>电话</label><span>'+esc(o.customer_phone)+'</span></div><div class="detail-item"><label>地址</label><span>'+esc(o.customer_address)+'</span></div><div class="detail-item"><label>要求</label><span>'+esc(o.delivery_requirement||'')+'</span></div><div class="detail-item"><label>付款</label><span>'+paymentLabel(o.payment_method)+'</span></div>'+(o.delivery_time?'<div class="detail-item"><label>配送时间</label><span>'+esc(o.delivery_time)+'</span></div>':'')+'<div class="detail-item"><label>金额</label><span style="color:var(--danger)">¥'+parseFloat(o.total_amount).toFixed(2)+'</span></div><div class="detail-item"><label>状态</label><span>'+statusBadge(o.status)+'</span></div></div><h5 style="margin-top:16px;margin-bottom:8px">商品</h5><table><thead><tr><th>商品</th><th>数量</th><th>单价</th><th>小计</th></tr></thead><tbody>'+o.items.map(i=>'<tr><td>'+esc(i.product_name)+'</td><td>'+i.quantity+'</td><td>¥'+parseFloat(i.unit_price).toFixed(2)+'</td><td>¥'+parseFloat(i.line_amount).toFixed(2)+'</td></tr>').join('')+'</tbody></table><h5 style="margin-top:16px;margin-bottom:8px">操作记录</h5>'+renderTimeline(o.logs)+'<div class="form-actions"><button class="btn btn-outline" onclick="closeModal(\'detailModal\')">关闭</button></div></div></div>'
+    $('detailModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'detailModal\')"><div class="modal"><h4>工单详情 — '+esc(o.order_no)+'</h4><div class="dg"><div class="di"><label>顾客</label><span>'+esc(o.customer_name)+'</span></div><div class="di"><label>电话</label><span>'+esc(o.customer_phone)+'</span></div><div class="di"><label>地址</label><span>'+esc(o.customer_address)+'</span></div><div class="di"><label>配送要求</label><span>'+esc(o.delivery_requirement||'—')+'</span></div><div class="di"><label>付款方式</label><span>'+paymentLabel(o.payment_method)+'</span></div>'+(o.delivery_time?'<div class="di"><label>期望配送</label><span>'+esc(o.delivery_time)+'</span></div>':'')+'<div class="di"><label>总金额</label><span style="color:var(--err);font-weight:700">¥'+parseFloat(o.total_amount).toFixed(2)+'</span></div><div class="di"><label>状态</label><span>'+statusBadge(o.status)+'</span></div></div><h5 style="margin-top:20px;margin-bottom:10px;font-size:14px">商品明细</h5><div class="table-wrap"><table><thead><tr><th>商品</th><th>数量</th><th>单价</th><th>小计</th></tr></thead><tbody>'+o.items.map(i=>'<tr><td>'+esc(i.product_name)+'</td><td>'+i.quantity+'</td><td>¥'+parseFloat(i.unit_price).toFixed(2)+'</td><td>¥'+parseFloat(i.line_amount).toFixed(2)+'</td></tr>').join('')+'</tbody></table></div><h5 style="margin-top:20px;margin-bottom:10px;font-size:14px">操作记录</h5>'+renderTimeline(o.logs)+'<div class="fa"><button class="btn btn-o" onclick="closeModal(\'detailModal\')">关闭</button></div></div></div>'
   }catch(e){toast(e.message,'error')}}
 
 async function cancelOrder(oid){const r=prompt('取消原因：');if(!r)return;try{await api('/orders/'+oid+'/cancel',{method:'POST',body:JSON.stringify({reason:r})});toast('已取消','success');renderMyOrders()}catch(e){toast(e.message,'error')}}
@@ -270,54 +287,48 @@ let allOF='',allOS='';
 async function renderAllOrders(){
   let qs='';if(allOF)qs+='&keyword='+encodeURIComponent(allOF);if(allOS)qs+='&status='+allOS;
   try{const d=await api('/orders?'+qs);
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>全部工单</h4></div><div class="search-bar"><input type="text" placeholder="搜索..." value="'+esc(allOF)+'" oninput="allOF=this.value;renderAllOrders()"><select onchange="allOS=this.value;renderAllOrders()"><option value="">全部</option><option value="pending">待派单</option><option value="dispatched">已派单</option><option value="delivering">配送中</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>店员</th><th>顾客</th><th>电话</th><th>地址</th><th>金额</th><th>状态</th><th>操作</th></tr></thead><tbody>'+d.data.map(o=>'<tr><td><strong>'+esc(o.order_no)+'</strong></td><td>'+esc(o.created_by_name||'')+'</td><td>'+esc(o.customer_name)+'</td><td>'+esc(o.customer_phone)+'</td><td>'+esc(o.customer_address)+'</td><td>¥'+parseFloat(o.total_amount).toFixed(2)+'</td><td>'+statusBadge(o.status)+'</td><td><button class="btn btn-outline btn-sm" onclick="showOD('+o.id+')">详情</button></td></tr>').join('')+'</tbody></table></div></div><div id="detailModal"></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>全部工单</h4></div><div class="search-bar"><input type="text" placeholder="搜索工单号/顾客/电话..." value="'+esc(allOF)+'" oninput="allOF=this.value;renderAllOrders()"><select onchange="allOS=this.value;renderAllOrders()"><option value="">全部状态</option><option value="pending">待派单</option><option value="dispatched">已派单</option><option value="delivering">配送中</option><option value="completed">已完成</option><option value="cancelled">已取消</option></select></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>店员</th><th>顾客</th><th>电话</th><th>地址</th><th>金额</th><th>状态</th><th>操作</th></tr></thead><tbody>'+d.data.map(o=>'<tr><td><strong>'+esc(o.order_no)+'</strong></td><td>'+esc(o.created_by_name||'')+'</td><td>'+esc(o.customer_name)+'</td><td>'+esc(o.customer_phone)+'</td><td>'+esc(o.customer_address)+'</td><td>¥'+parseFloat(o.total_amount).toFixed(2)+'</td><td>'+statusBadge(o.status)+'</td><td><button class="btn btn-o btn-sm" onclick="showOD('+o.id+')">详情</button></td></tr>').join('')+'</tbody></table></div></div><div id="detailModal"></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
 // ==================== DISPATCH ====================
 async function renderOrderPool(){
   try{const orders=await api('/dispatch/order-pool');
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>工单池（待派单）</h4></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>顾客</th><th>电话</th><th>地址</th><th>要求</th><th>金额</th><th>操作</th></tr></thead><tbody>'+orders.map(o=>'<tr><td><strong>'+esc(o.order_no)+'</strong></td><td>'+esc(o.customer_name)+'</td><td class="masked">'+maskPhone(o.customer_phone)+'</td><td>'+copyableAddress(o.customer_address)+'</td><td>'+esc(o.delivery_requirement)+'</td><td>¥'+parseFloat(o.total_amount).toFixed(2)+'</td><td><button class="btn btn-primary btn-sm" onclick="showDM('+o.id+')">派单</button></td></tr>').join('')+'</tbody></table>'+(orders.length===0?'<p style="text-align:center;color:var(--text-secondary);padding:20px">暂无</p>':'')+'</div></div><div id="dispatchModal"></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>工单池（待派单）</h4></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>顾客</th><th>电话</th><th>地址</th><th>配送要求</th><th>金额</th><th>操作</th></tr></thead><tbody>'+orders.map(o=>'<tr><td><strong>'+esc(o.order_no)+'</strong></td><td>'+esc(o.customer_name)+'</td><td class="masked">'+maskPhone(o.customer_phone)+'</td><td>'+copyableAddress(o.customer_address)+'</td><td>'+esc(o.delivery_requirement)+'</td><td>¥'+parseFloat(o.total_amount).toFixed(2)+'</td><td><button class="btn btn-p btn-sm" onclick="showDM('+o.id+')">派单</button></td></tr>').join('')+'</tbody></table>'+(orders.length===0?'<p style="text-align:center;color:var(--ts);padding:32px">暂无待派单工单</p>':'')+'</div></div><div id="dispatchModal"></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
 async function showDM(oid){
   try{const couriers=await api('/users?status=active');
-    $('dispatchModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'dispatchModal\')"><div class="modal"><h4>分派送货</h4><div class="form-group"><label>送货员</label><select id="dcCourier"><option value="">-- 选择 --</option>'+couriers.data.map(c=>'<option value="'+c.id+'">'+esc(c.display_name)+' ('+esc(c.phone||'')+')</option>').join('')+'</select></div><div class="form-group"><label>备注</label><textarea id="dcNotes"></textarea></div><div class="form-actions"><button class="btn btn-outline" onclick="closeModal(\'dispatchModal\')">取消</button><button class="btn btn-primary" onclick="submitD('+oid+')">确认</button></div></div></div>'
+    $('dispatchModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'dispatchModal\')"><div class="modal"><h4>分派送货</h4><div class="fg"><label>选择送货员</label><select id="dcCourier"><option value="">— 请选择 —</option>'+couriers.data.map(c=>'<option value="'+c.id+'">'+esc(c.display_name)+' ('+esc(c.phone||'')+')</option>').join('')+'</select></div><div class="fg"><label>备注</label><textarea id="dcNotes" placeholder="可选备注信息"></textarea></div><div class="fa"><button class="btn btn-o" onclick="closeModal(\'dispatchModal\')">取消</button><button class="btn btn-p" onclick="submitD('+oid+')">确认分派</button></div></div></div>'
   }catch(e){toast(e.message,'error')}}
-async function submitD(oid){
-  const cid=$('dcCourier').value,n=$('dcNotes').value.trim();
-  if(!cid){toast('请选择送货员','error');return}
-  try{await api('/orders/'+oid+'/dispatch',{method:'POST',body:JSON.stringify({courierId:parseInt(cid),notes:n})});closeModal('dispatchModal');toast('派单成功','success');renderOrderPool()}catch(e){toast(e.message,'error')}}
+async function submitD(oid){const cid=$('dcCourier').value,n=$('dcNotes').value.trim();if(!cid){toast('请选择送货员','error');return}try{await api('/orders/'+oid+'/dispatch',{method:'POST',body:JSON.stringify({courierId:parseInt(cid),notes:n})});closeModal('dispatchModal');toast('派单成功','success');renderOrderPool()}catch(e){toast(e.message,'error')}}
 
 async function renderDispatchMgmt(){
   try{const d=await api('/delivery-tasks');
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>派单记录</h4></div><div class="table-wrap"><table><thead><tr><th>配送单号</th><th>工单号</th><th>送货员</th><th>门店店员</th><th>顾客</th><th>状态</th><th>时间</th></tr></thead><tbody>'+d.data.map(t=>'<tr><td>'+esc(t.delivery_no)+'</td><td>'+esc(t.order_no)+'</td><td>'+esc(t.courier_name||'')+'</td><td>'+esc(t.clerk_name||'')+'</td><td>'+esc(t.customer_name)+'</td><td>'+statusBadge(t.status,'delivery')+'</td><td>'+fmtDate(t.assigned_at)+'</td></tr>').join('')+'</tbody></table></div></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>派单记录</h4></div><div class="table-wrap"><table><thead><tr><th>配送单号</th><th>工单号</th><th>送货员</th><th>门店店员</th><th>顾客</th><th>状态</th><th>分派时间</th></tr></thead><tbody>'+d.data.map(t=>'<tr><td>'+esc(t.delivery_no)+'</td><td>'+esc(t.order_no)+'</td><td>'+esc(t.courier_name||'')+'</td><td>'+esc(t.clerk_name||'')+'</td><td>'+esc(t.customer_name)+'</td><td>'+statusBadge(t.status,'delivery')+'</td><td>'+fmtDate(t.assigned_at)+'</td></tr>').join('')+'</tbody></table></div></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
 // ==================== DELIVERY ====================
 async function renderMyTasks(){
   try{const d=await api('/delivery-tasks');
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>我的配送任务</h4></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>顾客</th><th>电话</th><th>地址</th><th>要求</th><th>店员</th><th>状态</th><th>操作</th></tr></thead><tbody>'+d.data.map(t=>'<tr><td><strong>'+esc(t.order_no)+'</strong></td><td>'+esc(t.customer_name)+'</td><td>'+clickablePhone(t.customer_phone)+'</td><td>'+copyableAddress(t.customer_address)+'</td><td>'+esc(t.delivery_requirement||'')+'</td><td>'+esc(t.clerk_name||'')+'</td><td>'+statusBadge(t.status,'delivery')+'</td><td><button class="btn btn-outline btn-sm" onclick="showDD('+t.id+')">详情</button>'+(t.status!=='signed'&&t.status!=='failed'?'<button class="btn btn-primary btn-sm" onclick="showSM('+t.id+',\''+t.status+'\')">更新</button>':'')+'</td></tr>').join('')+'</tbody></table>'+(d.data.length===0?'<p style="text-align:center;color:var(--text-secondary);padding:20px">暂无任务</p>':'')+'</div></div><div id="detailModal"></div><div id="statusModal"></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>我的配送任务</h4></div><div class="table-wrap"><table><thead><tr><th>工单号</th><th>顾客</th><th>电话</th><th>地址</th><th>配送要求</th><th>店员</th><th>状态</th><th>操作</th></tr></thead><tbody>'+d.data.map(t=>'<tr><td><strong>'+esc(t.order_no)+'</strong></td><td>'+esc(t.customer_name)+'</td><td>'+clickablePhone(t.customer_phone)+'</td><td>'+copyableAddress(t.customer_address)+'</td><td>'+esc(t.delivery_requirement||'')+'</td><td>'+esc(t.clerk_name||'')+'</td><td>'+statusBadge(t.status,'delivery')+'</td><td class="actions"><button class="btn btn-o btn-sm" onclick="showDD('+t.id+')">详情</button>'+(t.status!=='signed'&&t.status!=='failed'?'<button class="btn btn-p btn-sm" onclick="showSM('+t.id+',\''+t.status+'\')">更新</button>':'')+'</td></tr>').join('')+'</tbody></table>'+(d.data.length===0?'<p style="text-align:center;color:var(--ts);padding:32px">暂无配送任务</p>':'')+'</div></div><div id="detailModal"></div><div id="statusModal"></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
 async function showDD(did){
   try{const t=await api('/delivery-tasks/'+did);
-    $('detailModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'detailModal\')"><div class="modal"><h4>配送详情 - '+esc(t.order_no)+'</h4><div class="detail-grid"><div class="detail-item"><label>顾客</label><span>'+esc(t.customer_name)+'</span></div><div class="detail-item"><label>电话</label><span style="color:var(--info);font-weight:700">'+clickablePhone(t.customer_phone)+'</span></div><div class="detail-item"><label>地址</label><span style="font-weight:600">'+copyableAddress(t.customer_address)+'</span></div><div class="detail-item"><label>要求</label><span>'+esc(t.delivery_requirement||'')+'</span></div><div class="detail-item"><label>支付</label><span>'+paymentLabel(t.payment_method)+'</span></div><div class="detail-item"><label>店员</label><span>'+esc(t.clerk_name||'')+'</span></div></div><h5 style="margin-top:16px;margin-bottom:8px">商品</h5><table><thead><tr><th>商品</th><th>数量</th></tr></thead><tbody>'+t.items.map(i=>'<tr><td>'+esc(i.product_name)+'</td><td>'+i.quantity+'</td></tr>').join('')+'</tbody></table><h5 style="margin-top:16px;margin-bottom:8px">记录</h5>'+renderTimeline(t.logs)+'<div class="form-actions"><button class="btn btn-outline" onclick="closeModal(\'detailModal\')">关闭</button></div></div></div>'
+    $('detailModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'detailModal\')"><div class="modal"><h4>配送详情 — '+esc(t.order_no)+'</h4><div class="dg"><div class="di"><label>顾客</label><span>'+esc(t.customer_name)+'</span></div><div class="di"><label>电话</label><span style="color:var(--p);font-weight:600">'+clickablePhone(t.customer_phone)+'</span></div><div class="di"><label>地址</label><span style="font-weight:500">'+copyableAddress(t.customer_address)+'</span></div><div class="di"><label>配送要求</label><span>'+esc(t.delivery_requirement||'—')+'</span></div><div class="di"><label>付款方式</label><span>'+paymentLabel(t.payment_method)+'</span></div><div class="di"><label>门店店员</label><span>'+esc(t.clerk_name||'')+'</span></div></div><h5 style="margin-top:20px;margin-bottom:10px;font-size:14px">商品明细</h5><div class="table-wrap"><table><thead><tr><th>商品</th><th>数量</th></tr></thead><tbody>'+t.items.map(i=>'<tr><td>'+esc(i.product_name)+'</td><td>'+i.quantity+'</td></tr>').join('')+'</tbody></table></div><h5 style="margin-top:20px;margin-bottom:10px;font-size:14px">配送记录</h5>'+renderTimeline(t.logs)+'<div class="fa"><button class="btn btn-o" onclick="closeModal(\'detailModal\')">关闭</button></div></div></div>'
   }catch(e){toast(e.message,'error')}}
 
 function showSM(did,cur){
   const o=[{v:'in_transit',l:'配送中'},{v:'delivered',l:'已送达'},{v:'signed',l:'已签收'},{v:'failed',l:'配送失败'}].filter(o=>o.v!==cur);
-  $('statusModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'statusModal\')"><div class="modal"><h4>更新状态</h4><div class="form-group"><label>新状态</label><select id="nsStatus">'+o.map(o=>'<option value="'+o.v+'">'+o.l+'</option>').join('')+'</select></div><div class="form-group"><label>备注</label><textarea id="nsNote"></textarea></div><div class="form-actions"><button class="btn btn-outline" onclick="closeModal(\'statusModal\')">取消</button><button class="btn btn-primary" onclick="confirmS('+did+')">确认</button></div></div></div>'
+  $('statusModal').innerHTML='<div class="modal-overlay" onclick="if(event.target===this)closeModal(\'statusModal\')"><div class="modal"><h4>更新配送状态</h4><div class="fg"><label>新状态</label><select id="nsStatus">'+o.map(o=>'<option value="'+o.v+'">'+o.l+'</option>').join('')+'</select></div><div class="fg"><label>备注</label><textarea id="nsNote" placeholder="可选备注"></textarea></div><div class="fa"><button class="btn btn-o" onclick="closeModal(\'statusModal\')">取消</button><button class="btn btn-p" onclick="confirmS('+did+')">确认</button></div></div></div>'
 }
-async function confirmS(did){
-  const s=$('nsStatus').value,n=$('nsNote').value.trim();
-  try{await api('/delivery-tasks/'+did+'/status',{method:'POST',body:JSON.stringify({status:s,note:n})});closeModal('statusModal');toast('已更新','success');renderMyTasks()}catch(e){toast(e.message,'error')}}
+async function confirmS(did){const s=$('nsStatus').value,n=$('nsNote').value.trim();try{await api('/delivery-tasks/'+did+'/status',{method:'POST',body:JSON.stringify({status:s,note:n})});closeModal('statusModal');toast('状态已更新','success');renderMyTasks()}catch(e){toast(e.message,'error')}}
 
 async function renderAllDeliveries(){
   try{const d=await api('/delivery-tasks');
-    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>全部配送记录</h4></div><div class="table-wrap"><table><thead><tr><th>配送单号</th><th>工单号</th><th>派单人</th><th>送货员</th><th>顾客</th><th>状态</th><th>时间</th></tr></thead><tbody>'+d.data.map(t=>'<tr><td>'+esc(t.delivery_no)+'</td><td>'+esc(t.order_no)+'</td><td>'+esc(t.dispatcher_name||'')+'</td><td>'+esc(t.courier_name||'')+'</td><td>'+esc(t.customer_name)+'</td><td>'+statusBadge(t.status,'delivery')+'</td><td>'+fmtDate(t.assigned_at)+'</td></tr>').join('')+'</tbody></table></div></div>'
-  }catch(e){$('mainContent').innerHTML='<p style="color:var(--danger)">'+esc(e.message)+'</p>'}}
+    $('mainContent').innerHTML='<div class="card"><div class="card-header"><h4>全部配送记录</h4></div><div class="table-wrap"><table><thead><tr><th>配送单号</th><th>工单号</th><th>派单人</th><th>送货员</th><th>顾客</th><th>状态</th><th>分派时间</th></tr></thead><tbody>'+d.data.map(t=>'<tr><td>'+esc(t.delivery_no)+'</td><td>'+esc(t.order_no)+'</td><td>'+esc(t.dispatcher_name||'')+'</td><td>'+esc(t.courier_name||'')+'</td><td>'+esc(t.customer_name)+'</td><td>'+statusBadge(t.status,'delivery')+'</td><td>'+fmtDate(t.assigned_at)+'</td></tr>').join('')+'</tbody></table></div></div>'
+  }catch(e){$('mainContent').innerHTML='<p style="color:var(--err)">'+esc(e.message)+'</p>'}}
 
-// ==================== INIT ====================
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&!$('loginPage').classList.contains('hidden'))handleLogin()})
 </script>
 </body>

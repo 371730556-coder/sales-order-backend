@@ -106,10 +106,10 @@ INSERT INTO menu_items (code, title, path, icon, sort_order) VALUES
 -- ============================================================
 -- 角色-菜单 关联
 -- ============================================================
--- Admin: 核心管理菜单（通过用户权限配置页面可随时调整）
+-- Admin: 核心管理菜单
 INSERT INTO role_menu_items (role_id, menu_item_id)
 SELECT r.id, m.id FROM roles r, menu_items m
-WHERE r.code = 'admin' AND m.code IN ('dashboard', 'users', 'all-orders', 'all-deliveries', 'reports');
+WHERE r.code = 'admin' AND m.code IN ('dashboard', 'users', 'all-orders', 'all-deliveries');
 
 -- Manager: 控制台、全部工单、配送记录、数据报表
 INSERT INTO role_menu_items (role_id, menu_item_id)
